@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
         ENetEvent event;
         if(enet_host_service(client, &event, 0) <= 0)
             continue;
-        if(event.type == ENET_EVENT_TYPE_RECEIVE) {
+        if(event.type == ENET_EVENT_TYPE_RECEIVE && event.channelID == 1) {
             char str[event.packet->dataLength];
             strncpy(str, (const char *)event.packet->data, event.packet->dataLength);
             PyObject *bstring = PyObject_CallFunction(bstringClass, "s", str);

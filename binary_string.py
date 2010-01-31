@@ -20,6 +20,19 @@ class BinaryString(str):
             L.append(c)
         return L
 
+    def read_uint(self, num=None):
+        if not num: return self.read_uint(1)[0]
+        L = []
+        for i in range(num):
+            n = self.read_uchar()
+            for j in (7, 14, 21):
+                if n & (1 << j):
+                    n += (self.read_uchar() << j) - (1 << j)
+            if n & (1 << 28):
+                n |= 0xF0000000
+            L.append(n)
+        return L
+
     def read_char(self, num=None):
         if not num: return self.read_char(1)[0]
         self.position += num
@@ -54,4 +67,7 @@ class BinaryString(str):
             v = ('\x81', 'i')
         return v[0] + struct.pack(v[1], i)
         
+    def sub_buffer(self, len):
+        self.position += len
+        return BinaryString(self[self.position-len:self.position-1])
 
